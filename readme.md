@@ -4,6 +4,7 @@ WIP. I have not touched the contents of the files yet.
 
 The sample application is layered as illustrated by this picture:
 ![](http://dddsample.sourceforge.net/images/layers.jpg)
+
 There are three vertical layers: Interfaces, Application and Domain, each supported by different kinds of infrastructure.
 
 ## Interfaces
