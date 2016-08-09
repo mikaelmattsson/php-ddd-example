@@ -161,7 +161,7 @@ return [
         App\Application\Providers\AppServiceProvider::class,
         App\Application\Providers\AuthServiceProvider::class,
         App\Application\Providers\EventServiceProvider::class,
-        App\Application\Providers\RouteServiceProvider::class,
+        App\Interfaces\Providers\RouteServiceProvider::class,
 
     ],
 
