@@ -1,0 +1,40 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:1.10
+    ports:
+      - 8888:80
+      - 4444:443
+    links:
+      - php
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    volumes_from:
+      - php:ro
+  php:
+    build: docker/php
+    links:
+      - cache:rediscache
+      - sessions:redissession
+      - elasticsearch
+    volumes:
+      - ./app:/var/www/html/app
+      - ./bootstrap:/var/www/html/bootstrap
+      - ./config:/var/www/html/config
+      - ./database:/var/www/html/database
+      - ./public:/var/www/html/public
+      - ./resources:/var/www/html/resources
+      - ./storage:/var/www/html/storage
+      - ./tests:/var/www/html/tests
+      - ./vendor:/var/www/html/vendor
+      - ./.env:/var/www/html/.env
+      - ./artisan:/var/www/html/artisan
+      - ./phpunit.xml:/var/www/html/phpunit.xml
+  cache:
+    image: redis:latest
+  sessions:
+    image: redis:latest
+  elasticsearch:
+    image: elasticsearch:2.3.5
+    volumes:
+      - ./data/elasticsearch/:/usr/share/elasticsearch/data

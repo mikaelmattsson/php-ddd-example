@@ -14,7 +14,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Http\Controllers';
+    protected $namespace = 'App\Interfaces\Http\Controllers';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -67,9 +67,9 @@ class RouteServiceProvider extends ServiceProvider
             |
             */
 
-            $router->get('/', function () {
-                return view('welcome');
-            });
+            $router->resource('post', 'Posts\PostController');
+
+            $router->get('/', 'Pages\HomeController@indexAction');
 
         });
     }

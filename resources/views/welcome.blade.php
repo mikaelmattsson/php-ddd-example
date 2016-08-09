@@ -1,45 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Laravel</title>
+<head>
+    <title>Laravel</title>
 
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet" type="text/css">
 
-        <style>
-            html, body {
-                height: 100%;
-            }
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
 
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato', sans-serif;
-            }
+        body {
+            font-weight: 300;
+            font-family: 'Lato', sans-serif;
+            font-size: 18px;
+        }
 
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
+        .container {
+            text-align: center;
 
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
+        }
 
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Laravel 5</div>
-            </div>
-        </div>
-    </body>
+        .content {
+            margin-top: 200px;
+        }
+
+        .title {
+            font-size: 56px;
+            font-weight: 100;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <div class="title">DDD Blog</div>
+        <form action="/post" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="text" name="text">
+            <input type="submit">
+        </form>
+    </div>
+</div>
+</body>
 </html>
