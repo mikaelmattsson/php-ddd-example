@@ -1,0 +1,1 @@
+The user aggregate. User is the aggregate root.

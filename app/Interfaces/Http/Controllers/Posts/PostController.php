@@ -2,23 +2,22 @@
 
 namespace App\Interfaces\Http\Controllers\Posts;
 
-use App\Domain\Service\PostService;
+use App\Domain\Model\Post\PostRepository;
 use App\Interfaces\Http\Controllers\AbstractController;
 use App\Domain\Model\Post\Post;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class PostController extends AbstractController
 {
     /**
-     * @var PostService
+     * @var PostRepository
      */
     private $postService;
 
     /**
-     * @param PostService $postService
+     * @param PostRepository $postService
      */
-    public function __construct(PostService $postService)
+    public function __construct(PostRepository $postService)
     {
         $this->postService = $postService;
     }
@@ -29,7 +28,7 @@ class PostController extends AbstractController
      */
     public function index()
     {
-        return [];
+        return $this->postService->getAll();
     }
 
     /**
@@ -44,7 +43,7 @@ class PostController extends AbstractController
             'text' => $request->get('text'),
         ]);
 
-        return $post;
+        return $post->toArray();
     }
 
     /**

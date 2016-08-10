@@ -1,1 +1,0 @@
-The task aggregate. Task is the aggregate root.

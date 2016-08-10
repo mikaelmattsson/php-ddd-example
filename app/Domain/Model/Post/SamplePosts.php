@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Domain\Model\Task;
+namespace App\Domain\Model\Post;
 
 /**
  * Set of tasks, for test purposes.
  */
-class SampleTasks
+class SamplePosts
 {
+
 }

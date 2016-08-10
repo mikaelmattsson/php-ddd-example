@@ -14,8 +14,7 @@ services:
   php:
     build: docker/php
     links:
-      - cache:rediscache
-      - sessions:redissession
+      - redis
       - elasticsearch
     volumes:
       - ./app:/var/www/html/app
@@ -30,9 +29,7 @@ services:
       - ./.env:/var/www/html/.env
       - ./artisan:/var/www/html/artisan
       - ./phpunit.xml:/var/www/html/phpunit.xml
-  cache:
-    image: redis:latest
-  sessions:
+  redis:
     image: redis:latest
   elasticsearch:
     image: elasticsearch:2.3.5

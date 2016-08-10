@@ -153,7 +153,6 @@ return [
         /*
          * Package Service Providers...
          */
-        Elasticquent\ElasticquentServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -161,6 +160,7 @@ return [
         App\Application\Providers\AppServiceProvider::class,
         App\Application\Providers\AuthServiceProvider::class,
         App\Application\Providers\EventServiceProvider::class,
+        App\Infrastructure\Persistence\Hibernate\PersistenceServiceProvider::class,
         App\Interfaces\Http\Providers\RouteServiceProvider::class,
 
     ],

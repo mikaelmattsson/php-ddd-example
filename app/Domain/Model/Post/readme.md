@@ -1,0 +1,1 @@
+The post aggregate. Post is the aggregate root.
