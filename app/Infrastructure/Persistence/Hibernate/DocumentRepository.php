@@ -18,6 +18,16 @@ class DocumentRepository
     protected $collectionClass = '';
 
     /**
+     * @var string
+     */
+    protected $mapperClass = '';
+
+    /**
+     * @var MapperInterface
+     */
+    private $mapper;
+
+    /**
      * @var PersistenceService
      */
     private $persistenceService;
@@ -33,6 +43,10 @@ class DocumentRepository
     public function __construct(PersistenceService $persistenceService)
     {
         $this->persistenceService = $persistenceService;
+
+        $mapperClass = $this->mapperClass;
+
+        $this->mapper = new $mapperClass($this->documentClass);
     }
 
     /**
@@ -42,7 +56,7 @@ class DocumentRepository
      */
     public function create(array $data) : DocumentInterface
     {
-        $document = $this->newDocument($data);
+        $document = $this->deserialize($data);
 
         $this->persist($document);
 
@@ -73,28 +87,18 @@ class DocumentRepository
     }
 
     /**
-     *
+     * @param array $data
+     * @return DocumentInterface
+     * @throws InfrastructureException
      */
-    public function newDocument($data) : DocumentInterface
+    public function deserialize($data) : DocumentInterface
     {
-        $documentClass = $this->documentClass;
-
-        if (!$documentClass) {
-            throw new InfrastructureException('documentClass is not set.');
-        }
-
-        $document = new $documentClass($data);
-
-        if (!$document instanceof DocumentInterface) {
-            throw new InfrastructureException(get_class($document).' is not an instance of '.DocumentInterface::class);
-        }
-
-        return $document;
+        return $this->mapper->deserialize($data);
     }
 
     public function getAll()
     {
-        $document = $this->newDocument([]);
+        $document = $this->deserialize([]);
 
         $data = $this->persistenceService->search([
             'index' => $document->getIndex(),
@@ -106,7 +110,7 @@ class DocumentRepository
 
     public function get($id)
     {
-        $document = $this->newDocument([]);
+        $document = $this->deserialize([]);
         $this->persistenceService->get([
             'index' => $document->getIndex(),
             'type' => $document->getType(),

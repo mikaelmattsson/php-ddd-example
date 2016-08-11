@@ -13,6 +13,11 @@ class PersistenceService
     private $client;
 
     /**
+     * @var array
+     */
+    private $mappers = [];
+
+    /**
      * @param Client $client
      */
     public function __construct(Client $client)
@@ -35,7 +40,7 @@ class PersistenceService
                 ]
             ];
 
-            $body[] = $document->toArray();
+            $body[] = $document;
 
             if (++$i % 1000 == 0) {
                 $this->client->bulk(['body' => $body]);
@@ -57,4 +62,5 @@ class PersistenceService
     {
         return $this->client->search($params);
     }
+    
 }

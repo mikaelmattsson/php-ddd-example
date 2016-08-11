@@ -6,17 +6,24 @@ use App\Domain\Shared\AbstractDocument;
 
 class Post extends AbstractDocument
 {
+    /**
+     * @var string
+     */
     protected $text;
 
+    /**
+     * @param array $data
+     */
     public function __construct(array $data)
     {
         $this->text = isset($data['text']) ? $data['text'] : '';
     }
 
-    public function toArray() : array
+    /**
+     * @return string
+     */
+    public function getText()
     {
-        return [
-            'text' => $this->text,
-        ];
+        return $this->text;
     }
 }

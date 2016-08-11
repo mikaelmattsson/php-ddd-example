@@ -12,14 +12,14 @@ class PostController extends AbstractController
     /**
      * @var PostRepository
      */
-    private $postService;
+    private $postRepository;
 
     /**
-     * @param PostRepository $postService
+     * @param PostRepository $postRepository
      */
-    public function __construct(PostRepository $postService)
+    public function __construct(PostRepository $postRepository)
     {
-        $this->postService = $postService;
+        $this->postRepository = $postRepository;
     }
 
     /**
@@ -28,7 +28,7 @@ class PostController extends AbstractController
      */
     public function index()
     {
-        return $this->postService->getAll();
+        return $this->postRepository->getAll();
     }
 
     /**
@@ -39,9 +39,11 @@ class PostController extends AbstractController
      */
     public function store(Request $request)
     {
-        $post = $this->postService->create([
+        $post = $this->postRepository->create([
             'text' => $request->get('text'),
         ]);
+
+        $this->postRepository->save();
 
         return $post->toArray();
     }

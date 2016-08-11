@@ -32,6 +32,8 @@ services:
   redis:
     image: redis:latest
   elasticsearch:
+    ports:
+      - 9200:9200
     image: elasticsearch:2.3.5
     volumes:
       - ./data/elasticsearch/:/usr/share/elasticsearch/data

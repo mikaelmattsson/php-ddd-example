@@ -10,4 +10,10 @@ class PostRepository extends DocumentRepository
      * @var string
      */
     protected $documentClass = Post::class;
+
+    /**
+     * @var PostMapper
+     */
+    protected $mapperClass = PostMapper::class;
+
 }
