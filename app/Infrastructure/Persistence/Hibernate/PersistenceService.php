@@ -13,9 +13,9 @@ class PersistenceService
     private $client;
 
     /**
-     * @var array
+     * @var PersistenceWrapper[]
      */
-    private $mappers = [];
+    protected $persisting = [];
 
     /**
      * @param Client $client
@@ -26,21 +26,53 @@ class PersistenceService
     }
 
     /**
-     * @param DocumentInterface[] $documents
+     * @param DocumentInterface $document
+     * @param MapperInterface $repository
+     * @return PersistenceService
      */
-    public function save(array $documents)
+    public function persist(DocumentInterface $document, MapperInterface $repository) : PersistenceService
+    {
+        $key = spl_object_hash($document);
+
+        if (!isset($this->persisting[$key])) {
+            $this->persisting[$key] = new PersistenceWrapper($document, $repository);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param DocumentInterface[] $documents
+     * @param MapperInterface $mapper
+     * @return PersistenceService
+     */
+    public function persistMultiple(array $documents, MapperInterface $mapper) : PersistenceService
+    {
+        foreach ($documents as $document) {
+            $this->persist($document, $mapper);
+        }
+
+        return $this;
+    }
+
+    public function save()
     {
         $body = [];
         $i = 0;
-        foreach ($documents as $document) {
+        foreach ($this->persisting as $wrapper) {
+
+            if (!$wrapper->getDocument()->isDirty()) {
+                continue;
+            }
+
             $body[] = [
                 'index' => [
-                    '_index' => $document->getIndex(),
-                    '_type' => $document->getType(),
+                    '_index' => $wrapper->getMapper()->getIndex(),
+                    '_type' => $wrapper->getMapper()->getType(),
                 ]
             ];
 
-            $body[] = $document;
+            $body[] = $wrapper->getMapper()->serialize($wrapper->getDocument());
 
             if (++$i % 1000 == 0) {
                 $this->client->bulk(['body' => $body]);
@@ -53,14 +85,14 @@ class PersistenceService
         }
     }
 
-    public function get($params)
+    public function get($params, MapperInterface $mapper) : Result
     {
-        return $this->client->get($params);
+        return new Result($this->client->get($params), $mapper);
     }
 
-    public function search($params)
+    public function search($params, MapperInterface $mapper) : Result
     {
-        return $this->client->search($params);
+        return new Result($this->client->search($params), $mapper);
     }
     
 }

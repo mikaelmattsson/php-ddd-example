@@ -43,4 +43,14 @@ abstract class AbstractMapper implements MapperInterface
 
         return $document;
     }
+
+    public function getIndex() : string
+    {
+        return str_replace('\\','_', strtolower($this->documentClass));
+    }
+
+    public function getType() : string
+    {
+        return str_replace('\\','_', strtolower($this->documentClass));
+    }
 }

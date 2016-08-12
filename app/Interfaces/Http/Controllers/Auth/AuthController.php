@@ -2,7 +2,6 @@
 
 namespace App\Interfaces\Http\Controllers\Auth;
 
-use App\User;
 use Validator;
 use App\Interfaces\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;

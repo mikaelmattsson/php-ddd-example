@@ -45,7 +45,7 @@ class PostController extends AbstractController
 
         $this->postRepository->save();
 
-        return $post->toArray();
+        return $this->postRepository->getMapper()->serialize($post);
     }
 
     /**

@@ -3,8 +3,9 @@
 namespace App\Domain\Model\Post;
 
 use App\Domain\Shared\AbstractDocument;
+use JsonSerializable;
 
-class Post extends AbstractDocument
+class Post extends AbstractDocument implements JsonSerializable
 {
     /**
      * @var string
@@ -25,5 +26,13 @@ class Post extends AbstractDocument
     public function getText()
     {
         return $this->text;
+    }
+
+
+    function jsonSerialize()
+    {
+        return [
+            'text' => $this->getText()
+        ];
     }
 }

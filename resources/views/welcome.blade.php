@@ -31,21 +31,57 @@
             font-weight: 100;
             margin-bottom: 20px;
         }
+
+        .posts {
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .posts article {
+            text-align: left;
+            padding: 15px;
+            border: 1px solid #bbb;
+            margin-bottom: 15px;
+        }
     </style>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
 
 </head>
 <body>
-<div class="container">
+<div class="container" ng-app="app" ng-controller="AppController as ctrl">
     <div class="content">
         <div class="title">DDD Blog</div>
-        <form action="/post" method="post">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <input type="text" name="text">
+        <form action="/post" method="post" ng-submit="newPost()">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" ng-model="token">
+            <input type="text" name="text" ng-model="text">
             <input type="submit">
         </form>
+
+        <div class="posts">
+            <article ng-repeat="post in ctrl.posts">
+                <p ng-bind="post.text"></p>
+            </article>
+        </div>
     </div>
 </div>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-resource.min.js"></script>
+<script>
+    var app = angular.module('app', ['ngResource']);
+
+    app.controller('AppController', AppController);
+
+    function AppController($resource) {
+        var ctrl = this;
+        var Post = $resource('/post/:postId', {postId: '@id'});
+
+        ctrl.posts = [];
+
+        Post.query(function (result) {
+            ctrl.posts = result;
+        });
+    }
+
+</script>
 </body>
 </html>

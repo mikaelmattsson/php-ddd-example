@@ -56,7 +56,7 @@ class DocumentRepository
      */
     public function create(array $data) : DocumentInterface
     {
-        $document = $this->deserialize($data);
+        $document = $this->mapper->deserialize($data);
 
         $this->persist($document);
 
@@ -86,35 +86,32 @@ class DocumentRepository
         return $this;
     }
 
-    /**
-     * @param array $data
-     * @return DocumentInterface
-     * @throws InfrastructureException
-     */
-    public function deserialize($data) : DocumentInterface
-    {
-        return $this->mapper->deserialize($data);
-    }
-
     public function getAll()
     {
-        $document = $this->deserialize([]);
+        //$document = $this->mapper->deserialize([]);
 
         $data = $this->persistenceService->search([
-            'index' => $document->getIndex(),
-            'type' => $document->getType(),
-        ]);
+            'index' => $this->mapper->getIndex(),
+            'type' => $this->mapper->getType(),
+        ], $this->mapper);
 
-        dd($data);
+        return $data->getDocuments();
     }
 
     public function get($id)
     {
-        $document = $this->deserialize([]);
         $this->persistenceService->get([
-            'index' => $document->getIndex(),
-            'type' => $document->getType(),
+            'index' => $this->mapper->getIndex(),
+            'type' => $this->mapper->getType(),
             'id' => $id,
-        ]);
+        ], $this->mapper);
+    }
+
+    /**
+     * @return MapperInterface
+     */
+    public function getMapper()
+    {
+        return $this->mapper;
     }
 }
