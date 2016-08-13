@@ -22,7 +22,6 @@ class PersistenceWrapper
      */
     public function __construct(DocumentInterface $document, MapperInterface $mapper)
     {
-
         $this->document = $document;
         $this->mapper = $mapper;
     }

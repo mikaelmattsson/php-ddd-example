@@ -69,7 +69,7 @@ class DocumentRepository
      */
     public function persist(DocumentInterface $document) : DocumentRepository
     {
-        $this->dirty[spl_object_hash($document)] = $document;
+        $this->persistenceService->persist($document, $this->mapper);
 
         return $this;
     }
@@ -79,9 +79,7 @@ class DocumentRepository
      */
     public function save() : DocumentRepository
     {
-        $this->persistenceService->save($this->dirty);
-
-        $this->dirty = [];
+        $this->persistenceService->save();
 
         return $this;
     }
