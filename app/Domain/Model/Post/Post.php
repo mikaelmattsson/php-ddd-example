@@ -5,7 +5,7 @@ namespace App\Domain\Model\Post;
 use App\Domain\Shared\AbstractDocument;
 use JsonSerializable;
 
-class Post extends AbstractDocument implements JsonSerializable
+class Post extends AbstractDocument
 {
     /**
      * @var string
@@ -17,6 +17,7 @@ class Post extends AbstractDocument implements JsonSerializable
      */
     public function __construct(array $data)
     {
+        $this->uuid = $data['uuid'];
         $this->text = isset($data['text']) ? $data['text'] : '';
     }
 
@@ -26,13 +27,5 @@ class Post extends AbstractDocument implements JsonSerializable
     public function getText()
     {
         return $this->text;
-    }
-
-
-    function jsonSerialize()
-    {
-        return [
-            'text' => $this->getText()
-        ];
     }
 }

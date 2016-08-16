@@ -4,8 +4,11 @@ namespace App\Infrastructure\Persistence\Hibernate;
 
 use App\Infrastructure\Exception\InfrastructureException;
 use App\Infrastructure\Persistence\DocumentInterface;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
+use Illuminate\Config\Repository as Config;
 
-class DocumentRepository
+abstract class AbstractDocumentRepository
 {
     /**
      * @var string
@@ -33,19 +36,26 @@ class DocumentRepository
     private $persistenceService;
 
     /**
-     * @var array
+     * @var UuidFactory
      */
-    private $dirty = [];
+    private $uuidFactory;
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
      * @param PersistenceService $persistenceService
+     * @param UuidFactory $uuidFactory
+     * @param Config $config
      */
-    public function __construct(PersistenceService $persistenceService)
+    public function __construct(PersistenceService $persistenceService, UuidFactory $uuidFactory, Config $config)
     {
         $this->persistenceService = $persistenceService;
+        $this->uuidFactory = $uuidFactory;
+        $this->config = $config;
 
         $mapperClass = $this->mapperClass;
-
         $this->mapper = new $mapperClass($this->documentClass);
     }
 
@@ -56,6 +66,8 @@ class DocumentRepository
      */
     public function create(array $data) : DocumentInterface
     {
+        $data['uuid'] = $this->uuidFactory->uuid5(Uuid::NAMESPACE_URL, $this->config->get('url'));
+
         $document = $this->mapper->deserialize($data);
 
         $this->persist($document);
@@ -65,9 +77,9 @@ class DocumentRepository
 
     /**
      * @param DocumentInterface $document
-     * @return DocumentRepository|static
+     * @return AbstractDocumentRepository|static
      */
-    public function persist(DocumentInterface $document) : DocumentRepository
+    public function persist(DocumentInterface $document) : AbstractDocumentRepository
     {
         $this->persistenceService->persist($document, $this->mapper);
 
@@ -75,19 +87,20 @@ class DocumentRepository
     }
 
     /**
-     * @return DocumentRepository|static
+     * @return AbstractDocumentRepository|static
      */
-    public function save() : DocumentRepository
+    public function save() : AbstractDocumentRepository
     {
-        $this->persistenceService->save();
+        $this->persistenceService->flush();
 
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getAll()
     {
-        //$document = $this->mapper->deserialize([]);
-
         $data = $this->persistenceService->search([
             'index' => $this->mapper->getIndex(),
             'type' => $this->mapper->getType(),
@@ -96,6 +109,9 @@ class DocumentRepository
         return $data->getDocuments();
     }
 
+    /**
+     * @param $id
+     */
     public function get($id)
     {
         $this->persistenceService->get([

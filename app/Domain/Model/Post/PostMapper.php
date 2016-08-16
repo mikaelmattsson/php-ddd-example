@@ -4,6 +4,7 @@ namespace App\Domain\Model\Post;
 
 use App\Domain\Shared\AbstractMapper;
 use App\Infrastructure\Persistence\DocumentInterface;
+use Ramsey\Uuid\Uuid;
 
 class PostMapper extends AbstractMapper
 {
@@ -15,6 +16,7 @@ class PostMapper extends AbstractMapper
     public function serialize(DocumentInterface $document) : array
     {
         return [
+            'uuid' => $document->getUuid(),
             'text' => $document->getText(),
         ];
     }
@@ -26,6 +28,7 @@ class PostMapper extends AbstractMapper
     public function deserialize(array $data) : DocumentInterface
     {
         return $this->instantiate([
+            'uuid' => Uuid::fromString($data['uuid']),
             'text' => $data['text'],
         ]);
     }

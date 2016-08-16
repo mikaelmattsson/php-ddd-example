@@ -2,9 +2,9 @@
 
 namespace App\Domain\Model\Post;
 
-use App\Infrastructure\Persistence\Hibernate\DocumentRepository;
+use App\Infrastructure\Persistence\Hibernate\AbstractDocumentRepository;
 
-class PostRepository extends DocumentRepository
+class PostRepository extends AbstractDocumentRepository
 {
     /**
      * @var string

@@ -23,6 +23,8 @@ class PersistenceService
     public function __construct(Client $client)
     {
         $this->client = $client;
+
+        register_shutdown_function([$this, 'flush']);
     }
 
     /**
@@ -55,7 +57,10 @@ class PersistenceService
         return $this;
     }
 
-    public function save()
+    /**
+     *
+     */
+    public function flush()
     {
         $body = [];
         $i = 0;

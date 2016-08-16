@@ -23,7 +23,7 @@
         }
 
         .content {
-            margin-top: 200px;
+            margin-top: 60px;
         }
 
         .title {
@@ -48,18 +48,19 @@
 
 </head>
 <body>
-<div class="container" ng-app="app" ng-controller="AppController as ctrl">
+<div class="container" ng-app="app" ng-controller="PostController as postCtrl">
     <div class="content">
         <div class="title">DDD Blog</div>
-        <form action="/post" method="post" ng-submit="newPost()">
+        <form ng-submit="postCtrl.newPost()">
             <input type="hidden" name="_token" value="{{ csrf_token() }}" ng-model="token">
-            <input type="text" name="text" ng-model="text">
+            <input type="text" name="text" ng-model="postCtrl.text">
             <input type="submit">
         </form>
 
         <div class="posts">
-            <article ng-repeat="post in ctrl.posts">
+            <article ng-repeat="post in postCtrl.posts">
                 <p ng-bind="post.text"></p>
+                <a href="#" ng-click="postCtrl.deletePost(post)">Delete</a>
             </article>
         </div>
     </div>
@@ -69,17 +70,40 @@
 <script>
     var app = angular.module('app', ['ngResource']);
 
-    app.controller('AppController', AppController);
+    app.controller('PostController', PostController);
 
-    function AppController($resource) {
-        var ctrl = this;
-        var Post = $resource('/post/:postId', {postId: '@id'});
+    function PostController($resource) {
+        var postCtrl = this;
+        var Post = $resource('/post/:postId', {postId: '@uuid'});
 
-        ctrl.posts = [];
+        postCtrl.posts = [];
+        postCtrl.text = 'Hello!';
 
-        Post.query(function (result) {
-            ctrl.posts = result;
-        });
+        postCtrl.newPost = newPost;
+        postCtrl.deletePost = deletePost;
+
+        init();
+
+        function init() {
+            Post.query(function (result) {
+                postCtrl.posts = result;
+            });
+        }
+
+        function newPost() {
+            if (postCtrl.text) {
+                Post.save({
+                    text: postCtrl.text
+                }, function (data) {
+                    postCtrl.posts.push(data);
+                });
+            }
+        }
+
+        function deletePost(post) {
+            console.log(post)
+            post.$delete();
+        }
     }
 
 </script>

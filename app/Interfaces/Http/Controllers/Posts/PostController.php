@@ -24,16 +24,24 @@ class PostController extends AbstractController
 
     /**
      * GET
-     * /posts
+     * /post
      */
     public function index()
     {
-        return $this->postRepository->getAll();
+        $documents =  $this->postRepository->getAll();
+
+        $response = [];
+
+        foreach ($documents as $document) {
+            $response[] = $this->postRepository->getMapper()->serialize($document);
+        }
+
+        return $response;
     }
 
     /**
      * POST
-     * /posts
+     * /post
      * @param Request $request
      * @return Post
      */
@@ -43,14 +51,12 @@ class PostController extends AbstractController
             'text' => $request->get('text'),
         ]);
 
-        $this->postRepository->save();
-
         return $this->postRepository->getMapper()->serialize($post);
     }
 
     /**
      * GET
-     * /posts/{id}
+     * /post/{id}
      */
     public function show($id)
     {
@@ -60,7 +66,7 @@ class PostController extends AbstractController
 
     /**
      * PUT/PATCH
-     * /posts/{id}
+     * /post/{id}
      */
     public function update($id)
     {
@@ -69,7 +75,7 @@ class PostController extends AbstractController
 
     /**
      * DELETE
-     * /posts/{id}
+     * /post/{id}
      */
     public function destroy($id)
     {
